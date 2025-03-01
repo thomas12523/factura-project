@@ -3,5 +3,4 @@ PyMuPDF
 pdfplumber
 pytesseract
 opencv-python
-sqlite3
 SQLAlchemy
