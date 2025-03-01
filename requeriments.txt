@@ -1,2 +1,7 @@
+tk
 PyMuPDF
-json
+pdfplumber
+pytesseract
+opencv-python
+sqlite3
+SQLAlchemy
