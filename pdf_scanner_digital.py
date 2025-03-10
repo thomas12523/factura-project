@@ -51,3 +51,28 @@ class Digital_Scanner:
                 info['Monto Total a Pagar'][0] = monto_pagar
         
         return info
+
+    def extract_info_edenor(self):
+        info = {'Fecha de Vto': [None, False],
+                'Monto Total a Pagar': [None, False]}
+
+        for page in self.pdf['pages']:
+            text = page['content']
+
+            monto_pagar_pattern = re.search(r"[-+]?\$?\s?(-?\d{1,3}(?:[\.,]\d{3})*(?:[\.,]\d+))",text, re.IGNORECASE)
+            monto_pagar = monto_pagar_pattern.group(1) if monto_pagar_pattern else "No encontrado"
+
+            fecha_Vto_pattern = re.search(r'(FECHA DE VENCIMIENTO|VENCIMIENTO).*?(\d{1,2}/\d{1,2}/\d{2,4})', text, re.IGNORECASE)
+            fecha_Vto = fecha_Vto_pattern.group(1) if fecha_Vto_pattern else "No encontrada"
+
+            if fecha_Vto != "No encontrada" and not info['Fecha de Vto'][1]:
+                info['Fecha de Vto'][1] = True
+                info['Fecha de Vto'][0] = fecha_Vto
+
+            if monto_pagar != "No encontrado" and not info['Monto Total a Pagar'][1]:
+                info['Monto Total a Pagar'][1] = True
+                info['Monto Total a Pagar'][0] = monto_pagar
+
+        return info
+
+    

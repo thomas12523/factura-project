@@ -1,4 +1,12 @@
 PyMuPDF
 python-dotenv
-SQLAlchemy
 re
+Flask
+Flask-Mail
+Flask-SQLAlchemy
+SQLAlchemy
+Flask-Bootstrap
+Flask-Login
+Flask-CKEditor
+Werkzeug
+Flask-WTF
