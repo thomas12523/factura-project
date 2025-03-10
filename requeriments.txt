@@ -1,2 +1,4 @@
 PyMuPDF
-json
+python-dotenv
+SQLAlchemy
+re
