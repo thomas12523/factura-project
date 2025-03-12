@@ -1,1 +1,96 @@
-<h1>En proceso...</h1>
+{% extends 'base.html' %}
+
+{% block title %}Mis Facturas{% endblock %}
+
+{% block styles %}
+<style>
+    body {
+        background: linear-gradient(135deg, #6a11cb, #2575fc);
+        height: 100vh;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+    }
+
+    .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+    }
+
+    .container-box {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 50px;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        text-align: center;
+        max-width: 600px;
+        width: 100%;
+        transition: all 0.3s ease;
+    }
+
+    .container-box:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .display-title {
+        font-size: 3rem;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    .lead-text {
+        font-size: 1.25rem;
+        margin-bottom: 40px;
+    }
+
+    .btn-custom {
+        width: 200px;
+        padding: 15px;
+        margin: 10px;
+        border-radius: 25px;
+        font-size: 1.1rem;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-custom:hover {
+        background-color: #ff6f61;
+        color: white;
+    }
+
+    .btn-light, .btn-dark {
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="container-box" data-aos="fade-up">
+        <h1 class="display-title">Bienvenido a Mis Facturas</h1>
+        <p class="lead-text">Gestiona tus facturas de manera rápida y segura con facilidad.</p>
+        <div class="d-flex justify-content-center">
+            <a href="{{ url_for('login') }}" class="btn btn-light btn-lg btn-custom" data-aos="zoom-in">Iniciar Sesion</a>
+            <a href="{{ url_for('register') }}" class="btn btn-dark btn-lg btn-custom" data-aos="zoom-in">Registrarse</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script>
+    AOS.init({
+        duration: 1000,
+        easing: 'ease-in-out',
+        once: true
+    });
+</script>
+{% endblock %}

@@ -2,9 +2,9 @@ Flask
 Flask-Mail
 Flask-SQLAlchemy
 SQLAlchemy
-Flask-Bootstrap
+Flask-Bootstrap5
 Flask-Login
 Flask-CKEditor
 Werkzeug
 Flask-WTF
-bleach
+python-dotenv
