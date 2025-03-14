@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 
-{% block style%}
-    
+{% block style %}
 <style>
     body {
         background: linear-gradient(135deg, #6a11cb, #2575fc); /* Fondo con gradiente */
@@ -14,6 +13,7 @@
     }
 </style>
 {% endblock %}
+
 {% block content %}
 <div class="container-fluid d-flex justify-content-center align-items-center" style="height: 100vh;">
     <div class="card shadow-lg p-4" style="max-width: 500px; border-radius: 15px;" data-aos="fade-up">
@@ -30,13 +30,15 @@
         {% endwith %}
         
         <form method="POST" action="{{ url_for('login') }}">
+            {{ form.hidden_tag() }}  
+
             <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" id="email" name="email" placeholder="Correo electrónico" required>
+                {{ form.email(class="form-control", id="email", placeholder="Correo electrónico", required="required") }}
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">Contraseña</label>
-                <input type="password" class="form-control" id="password" name="password" placeholder="Contraseña" required>
+                {{ form.password(class="form-control", id="password", placeholder="Contraseña", required="required") }}
             </div>
             <div class="d-grid gap-2">
                 <button type="submit" class="btn btn-primary">Iniciar sesión</button>

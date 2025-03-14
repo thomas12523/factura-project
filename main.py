@@ -7,18 +7,19 @@ from flask_bootstrap5 import Bootstrap
 from flask_login import UserMixin, login_user, LoginManager, current_user, logout_user,login_required
 from flask_ckeditor import CKEditor
 from werkzeug.security import generate_password_hash, check_password_hash
-from functools import wraps
-#from flask_wtf.csrf import CSRFProtect
+from flask_wtf.csrf import CSRFProtect
 from forms import loginForm,registerForm
 from dotenv import load_dotenv
 import os
 
 load_dotenv()
-
+csrf = CSRFProtect()
 app = Flask(__name__)
 Bootstrap(app)
 app.config["SECRET_KEY"] = os.getenv('SECRET_KEY')
 ckeditor = CKEditor(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
 
 class Base(DeclarativeBase):
     pass
@@ -26,6 +27,10 @@ class Base(DeclarativeBase):
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///facturas.db'
 db = SQLAlchemy(model_class=Base)
 db.init_app(app)
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 # DB Tables
 
@@ -62,6 +67,13 @@ with app.app_context():
 def home():
     return render_template('index.html')
 
+
+@app.route('/info/<string:username>')
+@login_required
+def info(username):
+    facturas = db.session.execute(db.select(Facturas).join(User).where(User.name == username)).scalars()
+    return render_template('info.html',facturas=facturas,username=username)
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form_login = loginForm()
@@ -77,7 +89,7 @@ def login():
             return redirect(url_for('login'))
         else:
             login_user(user)
-            return redirect(url_for('home'))
+            return redirect(url_for('info',username=user.name))
     return render_template('login.html', form=form_login, current_user=current_user)
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -91,11 +103,16 @@ def register():
             db.session.add(new_user)
             db.session.commit()
             login_user(new_user)
-            return redirect(url_for('home'))
+            return redirect(url_for('info',username=new_user.name))
         else:
             flash("You've already signed up with that email, log in instead!")
             return redirect(url_for('login'))
     return render_template('register.html', form=register_form)
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('home'))
 
 if __name__ == "__main__":
     app.run(debug=True,port=5000)
