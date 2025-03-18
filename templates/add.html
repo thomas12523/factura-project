@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block style %}
+<style>
+    body {
+        background: linear-gradient(135deg, #6a11cb, #2575fc);
+        height: 100vh;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid d-flex justify-content-center align-items-center" style="height: 100vh;">
+    <div class="card shadow-lg p-4" style="max-width: 500px; border-radius: 15px;" data-aos="fade-up">
+        <h1 class="text-center text-dark mb-4">Subir Factura</h1>
+        
+        <!-- Mostrar mensajes flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}" role="alert">
+                        <p class="text-center">{{ message }}</p>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Formulario de subida -->
+        <form method="POST" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+
+            <div class="mb-3">
+                <label for="email" class="form-label">Email del Usuario</label>
+                {{ form.email(class="form-control", id="email", placeholder="Ingrese su email", required="required") }}
+            </div>
+
+            <div class="mb-3">
+                <label for="proveedor" class="form-label">Proveedor</label>
+                {{ form.proveedor(class="form-control", id="proveedor", placeholder="Nombre del proveedor", required="required") }}
+            </div>
+
+            <div class="mb-3">
+                <label for="archivo" class="form-label">Subir Factura (PDF)</label>
+                {{ form.archivo(class="form-control", id="archivo", required="required") }}
+            </div>
+
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary">Subir Factura</button>
+            </div>
+        </form>
+
+        <div class="text-center mt-3">
+            <a href="{{ url_for('home') }}" class="btn btn-secondary">Volver al inicio</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script>
+    AOS.init({
+        duration: 1000,
+        easing: 'ease-in-out',
+        once: true
+    });
+</script>
+{% endblock %}

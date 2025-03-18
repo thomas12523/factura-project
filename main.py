@@ -8,15 +8,18 @@ from flask_login import UserMixin, login_user, LoginManager, current_user, logou
 from flask_ckeditor import CKEditor
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_wtf.csrf import CSRFProtect
-from forms import loginForm,registerForm
+from forms import loginForm,registerForm,addFactura
 from dotenv import load_dotenv
 import os
+from werkzeug.utils import secure_filename
+from pdf_scanner_digital import Digital_Scanner
 
 load_dotenv()
 csrf = CSRFProtect()
 app = Flask(__name__)
 Bootstrap(app)
 app.config["SECRET_KEY"] = os.getenv('SECRET_KEY')
+app.config['UPLOAD_FOLDER'] = 'uploads'
 ckeditor = CKEditor(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -67,11 +70,51 @@ with app.app_context():
 def home():
     return render_template('index.html')
 
+@app.route('/add',methods=['GET','POST'])
+def add():
+    addForm= addFactura()
+    if addForm.validate_on_submit():
+        email = addForm.email.data
+        user = db.session.execute(db.select(User).where(User.email == email)).scalar()
+        proveedor = addForm.proveedor.data
+        archivo = addForm.archivo.data
+        user_folder = os.path.join(app.config['UPLOAD_FOLDER'], user.name)
+        os.makedirs(user_folder,exist_ok=True)
+
+        filename = secure_filename(archivo.filename)
+        file_path = os.path.join(user_folder,filename)
+        archivo.save(file_path)
+
+        datos_pdf = Digital_Scanner(file_path)
+        procesado = None
+        if proveedor == "metrogas":
+            procesado = datos_pdf.extract_info_metrogas()
+        elif proveedor == "movistar":
+            procesado = datos_pdf.extract_info_movistar()
+        elif proveedor == "edenor":
+            procesado = datos_pdf.extract_info_edenor()
+        elif proveedor == "edesur":
+            procesado = datos_pdf.extract_info_edesur()
+        nueva_factura = Facturas(
+            category=proveedor,
+            fecha_vto=procesado['Fecha de Vto'][0],
+            monto_total=procesado['Monto Total a Pagar'][0],
+            pagado=False,
+            user_id=user.id
+        )
+        db.session.add(nueva_factura)
+        db.session.commit()
+        flash(f"Factura de {proveedor} subida correctamente para {user.name}", "success")
+        return redirect(url_for('info',username=user.name))
+    
+    return render_template('add.html', form=addForm)
 
 @app.route('/info/<string:username>')
 @login_required
 def info(username):
-    facturas = db.session.execute(db.select(Facturas).join(User).where(User.name == username)).scalars()
+    user_id = db.session.execute(db.select(User.id).where(User.name == username)).scalar()
+    facturas = db.session.execute(db.select(Facturas).where(Facturas.user_id == user_id)).scalars().all()
+    print(facturas)
     return render_template('info.html',facturas=facturas,username=username)
 
 @app.route('/login', methods=['GET', 'POST'])

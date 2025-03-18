@@ -1,7 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField,SubmitField, EmailField,IntegerField,SelectField,PasswordField
+from wtforms import StringField,SubmitField, EmailField,FileField,SelectField,PasswordField
 from flask_ckeditor import CKEditorField
 from wtforms.validators import DataRequired
+from flask_wtf.file import FileAllowed
 
 
 class registerForm(FlaskForm):
@@ -15,13 +16,13 @@ class loginForm(FlaskForm):
     password=PasswordField("Password",validators=[DataRequired()])
     submit = SubmitField("Submit")
 
-class addForm(FlaskForm):
-    category = SelectField("Category", choices=[
-        ("rat-poison", "Rat Poison"),
-        ("Cockroaches", "Cockroaches")
+class addFactura(FlaskForm):
+    proveedor = SelectField("Proveedor", choices=[
+        ("metrogas", "Metrogas"),
+        ("movistar", "Movistar"),
+        ("edenor","Edenor"),
+        ("edesur","Edesur")
     ], validators=[DataRequired()])
-    price=IntegerField("Price",validators=[DataRequired()])
-    name=StringField("Product Name",validators=[DataRequired()])
-    img=StringField("Name of Image",validators=[DataRequired()])
-    description=CKEditorField("Product's Description", validators=[DataRequired()])
+    email=StringField("Product Name",validators=[DataRequired()])
+    archivo=FileField('Subir PDF', validators=[DataRequired(), FileAllowed(['pdf'], 'Solo se permiten archivos PDF.')])
     submit = SubmitField("Submit")
