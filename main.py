@@ -126,6 +126,16 @@ def delete(username,id):
     return redirect(url_for('info',username=username))
 
 
+@app.route('/on/<string:username>/<int:id>')
+@login_required
+def on(username,id):
+    target = db.session.execute(db.select(Facturas).where(Facturas.id==id)).scalar()
+    if target.pagado:
+        target.pagado = False
+    else:
+        target.pagado = True
+    db.session.commit()   
+    return redirect(url_for('info',username=username))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

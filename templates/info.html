@@ -31,9 +31,9 @@
                         <td>${{ factura.monto_total }}</td>
                         <td>
                             {% if factura.pagado %}
-                                <span class="badge bg-success"><a href="#">Pagada</a></span><a href="{{ url_for('delete', username=username, id=factura.id) }}">❌</a>
+                                <span class="badge bg-success"><a href="{{ url_for('on', username=username, id=factura.id) }}" style="color: white; text-decoration: none;">Pagado</a></span><a href="{{ url_for('delete', username=username, id=factura.id) }}" style="margin-left: 8px;">❌</a>
                             {% else %}
-                                <span class="badge bg-danger"><a href="#" style="color: white; text-decoration: none;">No paga</a></span><a href="{{ url_for('delete', username=username, id=factura.id) }}" style="margin-left: 8px;">❌</a>
+                                <span class="badge bg-danger"><a href="{{ url_for('on', username=username, id=factura.id) }}" style="color: white; text-decoration: none;">No paga</a></span><a href="{{ url_for('delete', username=username, id=factura.id) }}" style="margin-left: 8px;">❌</a>
                             {% endif %}
                         </td>
                     </tr>
