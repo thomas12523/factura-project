@@ -19,7 +19,6 @@
             <table class="table table-dark table-hover mt-4">
                 <thead>
                     <tr>
-                        <th>ID</th>
                         <th>Fecha</th>
                         <th>Monto</th>
                         <th>Estado</th>
@@ -28,14 +27,13 @@
                 <tbody>
                     {% for factura in facturas %}
                     <tr>
-                        <td>{{ factura.id }}</td>
                         <td>{{ factura.fecha_vto }}</td>
                         <td>${{ factura.monto_total }}</td>
                         <td>
                             {% if factura.pagado %}
-                                <span class="badge bg-success">Pagada</span>
+                                <span class="badge bg-success"><a href="#">Pagada</a></span><a href="{{ url_for('delete', username=username, id=factura.id) }}">❌</a>
                             {% else %}
-                                <span class="badge bg-danger">Pendiente</span>
+                                <span class="badge bg-danger"><a href="#" style="color: white; text-decoration: none;">No paga</a></span><a href="{{ url_for('delete', username=username, id=factura.id) }}" style="margin-left: 8px;">❌</a>
                             {% endif %}
                         </td>
                     </tr>
@@ -50,7 +48,6 @@
         <!-- Botón de Salir adicional en la página -->
         <div class="text-center mt-4">
             <a href="{{ url_for('add') }}" class="btn btn-success btn-lg">Añadir Factura</a>
-            <a href="#" class="btn btn-danger btn-lg">Borrar Factura</a>
             <a href="#" class="btn btn-warning btn-lg">Modificar Factura</a>
         </div>
     </div>

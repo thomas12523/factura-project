@@ -54,7 +54,7 @@ class Facturas(db.Model):
     fecha_vto: Mapped[str] = mapped_column(String(1000), nullable=False)
     monto_total: Mapped[int] = mapped_column(Integer, nullable=False)
     pagado: Mapped[bool] = mapped_column(Boolean, default=False)
-
+    
     # Foreing Key
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=False)
 
@@ -114,8 +114,18 @@ def add():
 def info(username):
     user_id = db.session.execute(db.select(User.id).where(User.name == username)).scalar()
     facturas = db.session.execute(db.select(Facturas).where(Facturas.user_id == user_id)).scalars().all()
-    print(facturas)
     return render_template('info.html',facturas=facturas,username=username)
+
+
+@app.route('/delete/<string:username>/<int:id>')
+@login_required
+def delete(username,id):
+    target = db.session.execute(db.select(Facturas).where(Facturas.id==id)).scalar()
+    db.session.delete(target)
+    db.session.commit()
+    return redirect(url_for('info',username=username))
+
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
